@@ -739,6 +739,9 @@ class RetrieverSkeleton(ConfigurableBase):
       initialize(self, options)
       checkconf(self)
     '''
+
+    _rdns_cache = {}
+
     def __init__(self, **args):
         self.headercache = {}
         self.deleted = {}
@@ -778,10 +781,14 @@ class RetrieverSkeleton(ConfigurableBase):
             self.remoteaddr = str(serveraddr)
 
         remote_ip = serveraddr[0]
-        try:
-            rdns = socket.gethostbyaddr(remote_ip)[0]
-        except socket.error:
-            rdns = ""
+        if remote_ip in self._rdns_cache:
+            rdns = self._rdns_cache[remote_ip]
+        else:
+            try:
+                rdns = socket.gethostbyaddr(remote_ip)[0]
+            except socket.error:
+                rdns = ""
+            self._rdns_cache[remote_ip] = rdns
 
         self.received_from = '%s (%s [%s])' % (self.conf['server'],
                                                rdns,
