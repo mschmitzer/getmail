@@ -776,8 +776,8 @@ class RetrieverSkeleton(ConfigurableBase):
             # Shouldn't happen
             self.log.warn('unexpected peer address format %s', str(serveraddr))
             self.remoteaddr = str(serveraddr)
-        self.received_from = '%s (%s)' % (self.conf['server'], 
-                                          self.remoteaddr)
+        self.received_from = '%s ([%s])' % (self.conf['server'],
+                                            serveraddr[0])
 
     def __str__(self):
         self.log.trace()
